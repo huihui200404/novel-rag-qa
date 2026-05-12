@@ -1,7 +1,8 @@
 # rag_system.py
 import os
-os.environ["HF_HUB_OFFLINE"] = "1"
-os.environ["HF_ENDPOINT"] = "https://hf-mirror.com"
+# 以下两行已注释，允许 Railway 从 Hugging Face 下载模型
+# os.environ["HF_HUB_OFFLINE"] = "1"
+# os.environ["HF_ENDPOINT"] = "https://hf-mirror.com"
 
 from dotenv import load_dotenv
 load_dotenv()
