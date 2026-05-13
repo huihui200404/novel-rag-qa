@@ -7,6 +7,14 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
+# 依赖 router.py 中的动态路由函数
+from router import (
+    resolve_collection_name,      # 中文/拼音 → 拼音 collection 名
+    detect_book_from_query,       # 从问题中自动识别书名
+    get_all_collections,          # 获取所有已构建的 collection 名
+    get_book_name,                # 拼音 → 中文显示名
+)
+
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_chroma import Chroma
 from langchain_openai import ChatOpenAI
@@ -15,17 +23,8 @@ from langchain_core.retrievers import BaseRetriever
 from langchain_core.callbacks import CallbackManagerForRetrieverRun
 from langchain_core.prompts import PromptTemplate
 from langchain_classic.chains import RetrievalQA
-from typing import List
+from typing import List, Optional
 from langchain_core.documents import Document
-
-# ---------- 书名映射 ----------
-BOOK_MAP = {
-    "活着": "huozhe",
-    "许三观卖血记": "xusanguan",
-}
-
-def resolve_collection_name(name: str) -> str:
-    return BOOK_MAP.get(name, name)
 
 # ---------- 提示词模板 ----------
 TEMPLATE = """# 角色
@@ -58,14 +57,29 @@ _llm = None
 _embedding_model = None
 _current_collection = None
 
-def init_models(collection_name=None):
+def init_models(collection_name: Optional[str] = None):
+    """
+    初始化 Embedding 模型、向量库和 LLM。
+    如果 collection_name 为 None，则自动选择第一个可用的集合。
+    """
     global _vectorstore, _llm, _embedding_model, _current_collection
 
-    target = resolve_collection_name(collection_name) if collection_name else None
+    if collection_name:
+        # 将可能的书名或拼音转换为 collection 名
+        collection_name = resolve_collection_name(collection_name)
+    else:
+        # 未指定时，获取第一个可用的 collection
+        available = get_all_collections()
+        if not available:
+            raise RuntimeError("未找到任何向量库，请先使用 add_book.py 构建知识库。")
+        collection_name = available[0]
+        print(f"未指定书籍，自动选择: {collection_name}")
 
-    if _vectorstore is not None and _llm is not None and _current_collection == target:
+    # 如果向量库已经加载且目标没变，直接返回
+    if _vectorstore is not None and _llm is not None and _current_collection == collection_name:
         return _vectorstore, _llm
 
+    # 加载 Embedding 模型（全局共享）
     if _embedding_model is None:
         print("正在加载 Embedding 模型...")
         _embedding_model = HuggingFaceEmbeddings(
@@ -74,25 +88,18 @@ def init_models(collection_name=None):
             encode_kwargs={'normalize_embeddings': True}
         )
 
-    if not target:
-        import chromadb
-        client = chromadb.PersistentClient(path="./chroma_db")
-        collections = client.list_collections()
-        if not collections:
-            raise RuntimeError("未找到任何向量库，请先运行构建脚本。")
-        target = collections[0].name
-        print(f"自动选择向量库: {target}")
-
-    print(f"正在加载向量库: {target}")
+    # 加载指定 collection 的向量库
+    print(f"正在加载向量库: {collection_name}")
     _vectorstore = Chroma(
         persist_directory="./chroma_db",
         embedding_function=_embedding_model,
-        collection_name=target
+        collection_name=collection_name
     )
-    _current_collection = target
+    _current_collection = collection_name
     doc_count = len(_vectorstore.get()["documents"])
-    print(f"向量库 [{target}] 包含 {doc_count} 个文档片段")
+    print(f"向量库 [{collection_name}] 包含 {doc_count} 个文档片段")
 
+    # 加载 LLM（全局共享）
     if _llm is None:
         print("正在初始化智谱 LLM...")
         _llm = ChatOpenAI(
@@ -166,7 +173,13 @@ class SimpleEnsembleRetriever(BaseRetriever):
         return sorted_docs
 
 
-def build_qa_chain(collection_name=None, k=5, retrieval_type="ensemble"):
+def build_qa_chain(collection_name: Optional[str] = None, k: int = 7, retrieval_type: str = "ensemble"):
+    """
+    构建完整的 RAG 链。
+    collection_name: 可以是中文书名或拼音（如 "活着" 或 "huozhe"），为 None 时自动选。
+    k: 检索返回的文档数量
+    retrieval_type: "vector", "bm25", "ensemble"
+    """
     vs, llm = init_models(collection_name)
     all_texts = vs.get()["documents"]
 
@@ -206,14 +219,30 @@ def build_qa_chain(collection_name=None, k=5, retrieval_type="ensemble"):
     )
     return chain
 
-def get_qa_chain(collection_name="活着", **kwargs):
-    safe = resolve_collection_name(collection_name)
-    return build_qa_chain(collection_name=safe, **kwargs)
 
+def get_qa_chain(book: Optional[str] = None, k: int = 7, retrieval_type: str = "ensemble"):
+    """
+    便捷接口，供 Chainlit 或外部调用。
+    book: 书籍名称（中文/拼音均可），None 则自动选择第一个可用的。
+    """
+    if book:
+        book = resolve_collection_name(book)  # 确保统一为拼音
+    return build_qa_chain(collection_name=book, k=k, retrieval_type=retrieval_type)
+
+
+def get_available_books():
+    """
+    返回所有已构建知识库的书籍中文名列表，用于界面提示。
+    """
+    collections = get_all_collections()
+    return [get_book_name(c) for c in collections]
+
+
+# ---------- 本地测试 ----------
 if __name__ == "__main__":
-    vs, llm = init_models("活着")
-    qa = build_qa_chain(k=7, retrieval_type="ensemble")
-    print("\n《活着》知识库问答系统已就绪（输入 'exit' 退出）\n")
+    print("可用的书籍:", get_available_books())
+    qa = get_qa_chain()  # 自动选第一本
+    print("\n文学知识库问答系统已就绪（输入 'exit' 退出）\n")
     while True:
         query = input("你的问题: ").strip()
         if query.lower() == "exit":
