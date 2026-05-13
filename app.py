@@ -127,3 +127,5 @@ async def main(message: cl.Message):
     # 存入缓存
     cache.set(user_input, {"answer": final_msg})
     await cl.Message(content=final_msg).send()
+
+    import sys; print("APP STARTED", flush=True)
