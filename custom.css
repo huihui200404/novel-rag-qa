@@ -1,0 +1,106 @@
+/* ── 全局字体与抗锯齿 ── */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500&display=swap');
+
+:root {
+  --font-serif: 'Noto Serif SC', 'Songti SC', 'SimSun', serif;
+  --font-sans: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+}
+
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── 聊天消息气泡 ── */
+.message-content {
+  font-family: var(--font-sans);
+  line-height: 1.8;
+  font-size: 0.95rem;
+}
+
+/* 用户消息：更克制的右侧对齐 */
+.message-user .message-content {
+  background: hsl(var(--primary) / 0.08) !important;
+  border: 1px solid hsl(var(--primary) / 0.12) !important;
+  border-radius: 1rem 0.25rem 1rem 1rem !important;
+}
+
+/* AI 消息：左侧带微弱书卷边线 */
+.message-assistant .message-content {
+  background: transparent !important;
+  border-left: 2px solid hsl(var(--accent)) !important;
+  border-radius: 0 !important;
+  padding-left: 1rem !important;
+}
+
+/* ── 欢迎页 markdown 样式微调 ── */
+.markdown-body h1 {
+  font-family: var(--font-serif);
+  font-weight: 300;
+  letter-spacing: 0.2em;
+}
+
+.markdown-body blockquote {
+  border-left: 2px solid hsl(var(--accent));
+  color: hsl(var(--muted-foreground));
+  font-style: italic;
+  padding-left: 1rem;
+  margin: 1.5rem 0;
+}
+
+.markdown-body table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1.5rem 0;
+  font-size: 0.9rem;
+}
+
+.markdown-body th,
+.markdown-body td {
+  border-bottom: 1px solid hsl(var(--border));
+  padding: 0.6rem 0.8rem;
+  text-align: left;
+}
+
+.markdown-body th {
+  font-weight: 500;
+  color: hsl(var(--foreground));
+  border-bottom-width: 2px;
+}
+
+/* ── 输入框 ── */
+textarea[data-testid="chat-input"] {
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+/* ── 侧边栏 ── */
+aside {
+  font-family: var(--font-sans);
+}
+
+/* ── 滚动条 ── */
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted-foreground) / 0.3);
+  border-radius: 2px;
+}
+
+/* ── 按钮与交互元素 ── */
+button {
+  border-radius: 0.375rem !important;
+  transition: all 0.2s ease;
+}
+
+/* ── 移除 Chainlit 默认的一些过度圆角 ── */
+.rounded-xl {
+  border-radius: 0.5rem !important;
+}
