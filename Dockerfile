@@ -16,4 +16,6 @@ ENV SENTENCE_TRANSFORMERS_HOME=/app/models
 ENV HF_HUB_OFFLINE=1
 
 EXPOSE 8000
-CMD chainlit run app.py --port ${PORT:-8000} --host 0.0.0.0
+
+# ★ 关键修改：使用 JSON 数组格式，Chainlit 直接成为 PID 1
+CMD ["chainlit", "run", "app.py", "--port", "8000", "--host", "0.0.0.0"]
