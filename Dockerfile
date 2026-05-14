@@ -17,4 +17,4 @@ ENV CHAINLIT_PORT=8080
 EXPOSE 8080
 
 # 启动应用（使用 exec 形式，确保进程 PID 为 1，打印日志完整）
-CMD ["chainlit", "run", "app.py", "--port", "8080", "--host", "0.0.0.0"]
+CMD chainlit run app.py --port ${PORT:-8080} --host 0.0.0.0
