@@ -1,0 +1,69 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500&display=swap');
+
+/* ===== 1. 在 h-screen 容器上铺纹理 ===== */
+.h-screen.w-screen.flex {
+  position: relative;
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+.h-screen.w-screen.flex::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-color: hsl(240 6% 6%);
+  background-image:
+    radial-gradient(ellipse at 15% 20%, rgba(160, 110, 60, 0.07) 0%, transparent 55%),
+    radial-gradient(ellipse at 85% 80%, rgba(90, 60, 35, 0.06) 0%, transparent 55%),
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  background-attachment: fixed;
+  background-size: cover, cover, 200px 200px;
+}
+
+/* ===== 2. 毛玻璃消息气泡（原样保留） ===== */
+.dark [data-testid="message"] .message-content {
+  background: hsl(25 20% 14% / 0.6) !important;
+  backdrop-filter: blur(16px) saturate(140%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(140%) !important;
+  border: 1px solid hsl(25 25% 25% / 0.3) !important;
+  border-radius: 1.1rem 0.3rem 1.1rem 1.1rem !important;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.25) !important;
+}
+
+.dark [data-testid="message"]:not([data-testid*="user"]) .message-content {
+  background: hsl(240 5% 10% / 0.5) !important;
+  border-left: 2.5px solid hsl(25 55% 52% / 0.45) !important;
+  border-radius: 0.3rem 1.1rem 1.1rem 0.3rem !important;
+}
+
+/* ===== 3. 边栏、输入框（原样保留） ===== */
+.dark aside {
+  background: hsl(240 5% 7% / 0.9) !important;
+  backdrop-filter: blur(24px) !important;
+  border-right: 1px solid hsl(30 8% 16% / 0.45) !important;
+}
+
+.dark [data-testid="chat-input"] {
+  background: hsl(240 5% 9% / 0.7) !important;
+  backdrop-filter: blur(20px) saturate(150%) !important;
+  border: 1px solid hsl(30 8% 22% / 0.4) !important;
+  border-radius: 1.2rem !important;
+}
+
+/* ===== 4. 欢迎页标题（原样保留） ===== */
+.markdown-body h1 {
+  font-family: 'Noto Serif SC', serif !important;
+  font-weight: 300 !important;
+  letter-spacing: 0.25em !important;
+  text-align: center !important;
+}
+
+/* ===== 5. 动画（原样保留） ===== */
+@keyframes messageFadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+[data-testid="message"] {
+  animation: messageFadeIn 0.4s ease forwards !important;
+}

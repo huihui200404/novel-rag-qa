@@ -1,10 +1,10 @@
-<div align="center" style="margin-bottom: 2.5rem;">
+<div align="center" style="margin: 3rem 0 2.5rem;">
 
-<h1 style="font-weight: 300; letter-spacing: 0.15em; font-size: 1.8rem; margin-bottom: 0.6rem; color: var(--primary);">
+<h1 style="font-weight: 300; letter-spacing: 0.3em; font-size: 1.9rem; margin-bottom: 0.8rem; color: hsl(var(--primary));">
   文 渊
 </h1>
 
-<p style="letter-spacing: 0.08em; color: var(--muted-foreground); font-size: 0.9rem;">
+<p style="letter-spacing: 0.1em; color: hsl(var(--muted-foreground)); font-size: 0.85rem; font-weight: 300;">
   现当代小说智能研读系统
 </p>
 
@@ -34,13 +34,13 @@
 ## 试读问题
 
 > "福贵经历了哪些亲人的去世？"
-> 
+>
 > "《活着》的书名是否具有反讽结构？"
-> 
+>
 > "许三观卖血记中，一乐的身份如何推动叙事？"
 
 ---
 
-<<small style="color: var(--muted-foreground);">
+<<small style="color: hsl(var(--muted-foreground)); font-size: 0.85rem;">
   在下方输入框直接提问，系统将以结构化学术格式作答。
 </small>
