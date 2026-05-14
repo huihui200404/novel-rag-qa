@@ -1,7 +1,16 @@
 # rag_system.py
 import os
-# 注意：不再强制 HF_HUB_OFFLINE=1，否则 Railway 容器会因为无缓存而无法下载模型
-os.environ["HF_ENDPOINT"] = "https://hf-mirror.com"
+
+# ========== 自适应离线/在线加载 ==========
+# Docker 镜像中模型已预下载到 /app/models 下，离线加载；本地开发时如果该目录不存在，则允许在线下载。
+MODEL_PATH = os.environ.get("MODEL_PATH", "/app/models/bge-small-zh-v1.5")
+if os.path.isdir(MODEL_PATH):
+    os.environ["HF_HUB_OFFLINE"] = "1"          # 镜像内直接使用本地模型，不联网
+    print(f"✅ 使用本地模型: {MODEL_PATH}")
+else:
+    # 确保不强制离线，允许从 HuggingFace 官方下载（本地开发）
+    os.environ.pop("HF_HUB_OFFLINE", None)
+    print("ℹ️ 本地未找到模型，将从 HuggingFace 在线加载")
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -67,11 +76,19 @@ def init_models(collection_name=None):
 
     if _embedding_model is None:
         print("正在加载 Embedding 模型...")
-        _embedding_model = HuggingFaceEmbeddings(
-            model_name="BAAI/bge-small-zh-v1.5",
-            model_kwargs={'device': 'cpu'},
-            encode_kwargs={'normalize_embeddings': True}
-        )
+        # 如果存在本地路径则直接加载，否则用 HuggingFace 在线加载（模型名仍为 BAAI/bge-small-zh-v1.5）
+        if os.path.isdir(MODEL_PATH):
+            _embedding_model = HuggingFaceEmbeddings(
+                model_name=MODEL_PATH,
+                model_kwargs={'device': 'cpu'},
+                encode_kwargs={'normalize_embeddings': True}
+            )
+        else:
+            _embedding_model = HuggingFaceEmbeddings(
+                model_name="BAAI/bge-small-zh-v1.5",
+                model_kwargs={'device': 'cpu'},
+                encode_kwargs={'normalize_embeddings': True}
+            )
 
     if not target:
         import chromadb
