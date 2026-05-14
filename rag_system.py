@@ -1,6 +1,6 @@
 # rag_system.py
 import os
-os.environ["HF_HUB_OFFLINE"] = "1"
+# 注意：不再强制 HF_HUB_OFFLINE=1，否则 Railway 容器会因为无缓存而无法下载模型
 os.environ["HF_ENDPOINT"] = "https://hf-mirror.com"
 
 from dotenv import load_dotenv
