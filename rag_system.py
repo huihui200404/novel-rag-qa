@@ -1,19 +1,17 @@
-# rag_system.py
 import os
 
-# ========== 自适应离线/在线加载 ==========
-# Docker 镜像中模型已预下载到 /app/models 下，离线加载；本地开发时如果该目录不存在，则允许在线下载。
 MODEL_PATH = os.environ.get("MODEL_PATH", "/app/models/bge-small-zh-v1.5")
 if os.path.isdir(MODEL_PATH):
-    os.environ["HF_HUB_OFFLINE"] = "1"          # 镜像内直接使用本地模型，不联网
+    os.environ["HF_HUB_OFFLINE"] = "1"
     print(f"✅ 使用本地模型: {MODEL_PATH}")
 else:
-    # 确保不强制离线，允许从 HuggingFace 官方下载（本地开发）
+    # 注意：不再设置 HF_ENDPOINT，让系统默认用 huggingface.co
     os.environ.pop("HF_HUB_OFFLINE", None)
-    print("ℹ️ 本地未找到模型，将从 HuggingFace 在线加载")
+    print("ℹ️ 本地未找到模型，将从 HuggingFace 官方源在线加载")
 
 from dotenv import load_dotenv
 load_dotenv()
+# ... 后面保持不变import os
 
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_chroma import Chroma
