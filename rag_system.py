@@ -1,17 +1,18 @@
+# rag_system.py
 import os
 
-MODEL_PATH = os.environ.get("MODEL_PATH", "/app/models/bge-small-zh-v1.5")
-if os.path.isdir(MODEL_PATH):
+# ================= 自适应模型加载（本地 / 在线） =================
+MODEL_PATH = os.environ.get("MODEL_PATH", "")
+
+if MODEL_PATH and os.path.isdir(MODEL_PATH):
+    # Docker 环境：模型已预装，强制离线读取，速度最快且永远成功
     os.environ["HF_HUB_OFFLINE"] = "1"
-    print(f"✅ 使用本地模型: {MODEL_PATH}")
 else:
-    # 注意：不再设置 HF_ENDPOINT，让系统默认用 huggingface.co
+    # 本地开发环境：允许从 HuggingFace 官方源或本地缓存加载
     os.environ.pop("HF_HUB_OFFLINE", None)
-    print("ℹ️ 本地未找到模型，将从 HuggingFace 官方源在线加载")
 
 from dotenv import load_dotenv
 load_dotenv()
-# ... 后面保持不变import os
 
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_chroma import Chroma
@@ -74,14 +75,16 @@ def init_models(collection_name=None):
 
     if _embedding_model is None:
         print("正在加载 Embedding 模型...")
-        # 如果存在本地路径则直接加载，否则用 HuggingFace 在线加载（模型名仍为 BAAI/bge-small-zh-v1.5）
-        if os.path.isdir(MODEL_PATH):
+        # 优先使用本地路径（如果存在），否则从 HuggingFace 在线加载
+        if MODEL_PATH and os.path.isdir(MODEL_PATH):
+            print(f"  -> 使用本地模型: {MODEL_PATH}")
             _embedding_model = HuggingFaceEmbeddings(
                 model_name=MODEL_PATH,
                 model_kwargs={'device': 'cpu'},
                 encode_kwargs={'normalize_embeddings': True}
             )
         else:
+            print("  -> 本地模型未找到，将从 HuggingFace 官方源加载")
             _embedding_model = HuggingFaceEmbeddings(
                 model_name="BAAI/bge-small-zh-v1.5",
                 model_kwargs={'device': 'cpu'},
