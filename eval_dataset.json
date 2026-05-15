@@ -1,0 +1,92 @@
+[
+  {
+    "id": "Q01",
+    "difficulty": "简单",
+    "question": "福贵的妻子叫什么名字？",
+    "keywords": ["家珍"]
+  },
+  {
+    "id": "Q02",
+    "difficulty": "简单",
+    "question": "福贵的儿子叫什么？",
+    "keywords": ["有庆"]
+  },
+  {
+    "id": "Q03",
+    "difficulty": "简单",
+    "question": "福贵最开始输掉家产是通过什么方式？",
+    "keywords": ["赌"]
+  },
+  {
+    "id": "Q04",
+    "difficulty": "中等",
+    "question": "福贵一生经历了哪些亲人的去世？",
+    "keywords": ["父亲", "母亲", "家珍", "凤霞", "有庆", "二喜", "苦根"]
+  },
+  {
+    "id": "Q05",
+    "difficulty": "中等",
+    "question": "有庆是怎么死的？",
+    "keywords": ["献血", "抽血"]
+  },
+  {
+    "id": "Q06",
+    "difficulty": "中等",
+    "question": "家珍得了什么病？",
+    "keywords": ["软骨"]
+  },
+  {
+    "id": "Q07",
+    "difficulty": "中等",
+    "question": "凤霞为什么会变成聋哑人？",
+    "keywords": ["发烧"]
+  },
+  {
+    "id": "Q08",
+    "difficulty": "中等",
+    "question": "苦根是怎么死的？",
+    "keywords": ["豆子", "撑"]
+  },
+  {
+    "id": "Q09",
+    "difficulty": "中等",
+    "question": "福贵输掉家产后，他的父亲是如何死的？",
+    "keywords": ["粪缸", "摔"]
+  },
+  {
+    "id": "Q10",
+    "difficulty": "中等",
+    "question": "春生是做什么的？曾和福贵在哪里相遇？",
+    "keywords": ["当兵", "国民党", "战场"]
+  },
+  {
+    "id": "Q11",
+    "difficulty": "中等",
+    "question": "凤霞的丈夫叫什么？他的外貌特征是什么？",
+    "keywords": ["二喜", "偏头"]
+  },
+  {
+    "id": "Q12",
+    "difficulty": "困难",
+    "question": "为什么余华让福贵最后只剩一头老牛？",
+    "keywords": ["象征", "孤独", "韧性"]
+  },
+  {
+    "id": "Q13",
+    "difficulty": "困难",
+    "question": "《活着》的书名有什么反讽意味？",
+    "keywords": ["表面活着", "苦难", "承受"]
+  },
+  {
+    "id": "Q14",
+    "difficulty": "困难",
+    "question": "福贵说“我是有时候想想伤心...”是在什么心境下？",
+    "keywords": ["经历死亡", "回忆", "亲情"]
+  },
+  {
+    "id": "Q15",
+    "difficulty": "困难",
+    "question": "小说开头“我”在乡间收集民谣...叙事结构的作用？",
+    "keywords": ["旁观者", "距离", "真实"]
+  }
+]
